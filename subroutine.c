@@ -1,7 +1,7 @@
 #include <subroutine.h>
 #include <model.h>
 void *model_modification_routine(ALLEGRO_THREAD *thr, void *modelarg) {
-    Model *model = (Model *) modelarg;
+    struct GameModel *model = (struct GameModel *) modelarg;
 
     al_rest(5);
     while(!al_get_thread_should_stop(thr)){

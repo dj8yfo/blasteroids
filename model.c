@@ -4,34 +4,63 @@
 #include <spaceship.h>
 #include <math.h>
 #include <dbg.h>
-Model* init_model(float width, float height, ALLEGRO_DISPLAY *display) {
+struct GameModel* init_model(float width, float height, ALLEGRO_DISPLAY *display) {
 
     Spaceship *ship = malloc(sizeof(Spaceship));
     check_mem(ship);
-    Model *res = malloc(sizeof(Model));
+    Spaceship *derelict = malloc(sizeof(Spaceship));
+    check_mem(derelict);
+    struct GameModel *res = malloc(sizeof(struct GameModel));
     check_mem(res);
-    *ship = create_spaceship(width/2.0, height/2.0, SHIP_DISPLAY_ROT);
+    Center *cr = malloc(sizeof(Center));
+    check_mem(cr);
+    Center center = {.x = width/2.0, .y = height/2.0, .speed = 0.0,
+                     .direction = SHIP_DISPLAY_ROT};
+    *cr = center;
+    *ship = create_spaceship(width/2.0, height/2.0, SHIP_DISPLAY_ROT,
+                             al_map_rgb(0, 244, 0), 0.2);
+    *derelict = create_spaceship(width/2.0 + 40, height/2.0 + 40, SHIP_DISPLAY_ROT,
+                                 al_map_rgb(0, 244, 244), 0.0);
     ALLEGRO_MUTEX *mx = al_create_mutex();
-    Model stru = {.ship = ship, .width = width, .height = height,
-                  .display = display, .mutex = mx};
+    struct GameModel stru = {.ship = ship, .derelict = derelict, .width = width, .height = height,
+                  .display = display, .mutex = mx, .cr = cr};
     log_info("init model with %f %f", width, height);
     *res = stru;
     return res;
 error:
     if(ship) free(ship);
+    if(derelict) free(derelict);
+    if(cr) free(cr);
     return NULL;
 }
 
-void draw_model(Model *mod) {
-    draw_ship(mod->ship, mod->display);
+void draw_model(struct GameModel *mod) {
+    draw_ship(mod->derelict, mod);
+    draw_ship(mod->ship, mod);
 }
 
-void step_model(Model *mod) {
+float screencenterx(struct GameModel *mod) {
+    return mod->width/2.0;
+}
+float screencentery(struct GameModel *mod) {
+    return mod->height/2.0;
+}
+float gx(struct GameModel *mod, float x) {
+    return x - mod->cr->x;
+}
+float gy(struct GameModel *mod, float y) {
+    return y - mod->cr->y;
+}
+void step_model(struct GameModel *mod) {
+    /* step_center(mod->cr); */
     step_ship(mod->ship);
+    step_ship(mod->derelict);
+    /* redir_center(mod); */
 }
 
-void destr_model(Model *mod) {
+void destr_model(struct GameModel *mod) {
     al_destroy_mutex(mod->mutex);
     free(mod->ship);
+    free(mod->cr);
     free(mod);
 }

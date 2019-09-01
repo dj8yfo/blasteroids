@@ -3,17 +3,26 @@
 
 #include <allegro5/allegro.h>
 #include <spaceship.h>
-typedef struct GameModel {
+#include <center.h>
+
+
+struct GameModel {
     float width;
     float height;
-    Spaceship *ship;
+    struct Spaceship *ship;
+    struct Spaceship *derelict;
+    Center *cr;
     ALLEGRO_DISPLAY *display;
     ALLEGRO_MUTEX *mutex;
-} Model;
+};
 
-Model* init_model(float width, float height, ALLEGRO_DISPLAY *display) ;
-void draw_model(Model *mod);
-void destr_model(Model *mod);
-void step_model(Model *mod);
+struct GameModel* init_model(float width, float height, ALLEGRO_DISPLAY *display) ;
+void draw_model(struct GameModel *mod);
+void destr_model(struct GameModel *mod);
+void step_model(struct GameModel *mod);
+float gx(struct GameModel *mod, float x);
+float gy(struct GameModel *mod, float y);
+float screencenterx(struct GameModel *mod);
+float screencentery(struct GameModel *mod);
 
 #endif // MACRO

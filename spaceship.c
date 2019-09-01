@@ -2,17 +2,19 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <locmath.h>
+#include <model.h>
 #include <math.h>
 #define NDEBUG
 #include <dbg.h>
-Spaceship create_spaceship(float initx, float inity, float rotation) {
+Spaceship create_spaceship(float initx, float inity, float rotation,
+                           ALLEGRO_COLOR color, float speed) {
     log_info("init spaceship at %f %f", initx, inity);
     Spaceship res = {.startx = initx, .starty = inity,
                      .sx=initx, .sy = inity,
                      .heading = rotation,
-                     .speed = 0.2,
+                     .speed = speed,
                      .lives_left = 3, .interactable = 0,
-                     .color = al_map_rgb(0, 244, 0)
+                     .color = color
     };
     return res;
 }
@@ -32,13 +34,17 @@ void step_ship(Spaceship* s) {
     s->sx += dx;
     s->sy += dy;
 }
-void draw_ship(Spaceship* s, ALLEGRO_DISPLAY* display)
+
+void draw_ship(Spaceship* s, struct GameModel *model)
 {
     ALLEGRO_TRANSFORM transform;
     al_identity_transform(&transform);
+    ALLEGRO_DISPLAY *display = model->display;
 
     al_rotate_transform(&transform, deg_to_rad(s->heading - SHIP_DISPLAY_ROT));
-    al_translate_transform(&transform, s->sx, s->sy);
+    float newx = gx(model, s->sx) + screencenterx(model);
+    float newy = gy(model, s->sy) + screencentery(model);
+    al_translate_transform(&transform, newx, newy);
     al_set_target_backbuffer(display);
     al_use_transform(&transform);
     al_draw_line(-8, 9, 0, -11, s->color, 3.0f);

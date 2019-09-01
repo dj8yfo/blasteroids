@@ -21,7 +21,7 @@ int main(int argc, char **argv){
 
    int rc = alle_comps_init(&display, &timer, &event_queue);
    check(rc == 0, "Failed to init one of allegrocomps");
-   Model *gameint = init_model(DISP_WIDTH, DISP_HEIGHT, display);
+   struct GameModel *gameint = init_model(DISP_WIDTH, DISP_HEIGHT, display);
    check_mem(gameint);
    model_routine = al_create_thread(model_modification_routine, gameint);
    check_mem(model_routine);
