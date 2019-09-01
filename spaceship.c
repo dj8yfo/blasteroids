@@ -1,15 +1,16 @@
-#include "spaceship.h"
+#include <spaceship.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-#include "locmath.h"
+#include <locmath.h>
+#include <math.h>
 #define NDEBUG
-#include "dbg.h"
+#include <dbg.h>
 Spaceship create_spaceship(float initx, float inity, float rotation) {
     log_info("init spaceship at %f %f", initx, inity);
     Spaceship res = {.startx = initx, .starty = inity,
                      .sx=initx, .sy = inity,
                      .heading = rotation,
-                     .speed = 5.0,
+                     .speed = 0.2,
                      .lives_left = 3, .interactable = 0,
                      .color = al_map_rgb(0, 244, 0)
     };
@@ -24,12 +25,19 @@ int reinit_spaceshit(Spaceship *ship) {
     ship->sy = ship->starty;
     return 1;
 }
+void step_ship(Spaceship* s) {
+    float dir = deg_to_rad(s->heading);
+    float dx = s->speed * cos(dir);
+    float dy = s->speed * sin(dir);
+    s->sx += dx;
+    s->sy += dy;
+}
 void draw_ship(Spaceship* s, ALLEGRO_DISPLAY* display)
 {
     ALLEGRO_TRANSFORM transform;
     al_identity_transform(&transform);
 
-    al_rotate_transform(&transform, deg_to_rad(s->heading));
+    al_rotate_transform(&transform, deg_to_rad(s->heading - SHIP_DISPLAY_ROT));
     al_translate_transform(&transform, s->sx, s->sy);
     al_set_target_backbuffer(display);
     al_use_transform(&transform);

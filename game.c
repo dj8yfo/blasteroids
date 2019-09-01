@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-#include "dbg.h"
-#include "game.h"
-#include "model.h"
-#include "spaceship.h"
+#include <dbg.h>
+#include <game.h>
+#include <model.h>
+#include <spaceship.h>
+#include <subroutine.h>
 
 const float FPS = 60;
 const int DISP_WIDTH = 1600;
@@ -15,12 +16,16 @@ int main(int argc, char **argv){
    ALLEGRO_DISPLAY *display = NULL;
    ALLEGRO_EVENT_QUEUE *event_queue = NULL;
    ALLEGRO_TIMER *timer = NULL;
+   ALLEGRO_THREAD *model_routine = NULL;
    bool redraw = true;
 
    int rc = alle_comps_init(&display, &timer, &event_queue);
    check(rc == 0, "Failed to init one of allegrocomps");
    Model *gameint = init_model(DISP_WIDTH, DISP_HEIGHT, display);
    check_mem(gameint);
+   model_routine = al_create_thread(model_modification_routine, gameint);
+   check_mem(model_routine);
+   al_start_thread(model_routine);
 
    al_clear_to_color(al_map_rgb(0,0,0));
    al_flip_display();
@@ -50,16 +55,21 @@ int main(int argc, char **argv){
        if(redraw && al_is_event_queue_empty(event_queue)) {
            redraw = false;
            al_clear_to_color(al_map_rgb(0,0,0));
+           al_lock_mutex(gameint->mutex);
            draw_model(gameint);
+           al_unlock_mutex(gameint->mutex);
+
            al_flip_display();
        }
    }
 exitmaineventloop:
+   al_destroy_thread(model_routine);
    alle_cleanup(display, timer, event_queue);
    if(gameint) destr_model(gameint);
    return 0;
 error:
    alle_cleanup(display, timer, event_queue);
+   if(model_routine) al_destroy_thread(model_routine);
    if(gameint) destr_model(gameint);
    return 1;
 }
