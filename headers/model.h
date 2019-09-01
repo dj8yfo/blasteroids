@@ -19,10 +19,9 @@ struct GameModel {
 struct GameModel* init_model(float width, float height, ALLEGRO_DISPLAY *display) ;
 void draw_model(struct GameModel *mod);
 void destr_model(struct GameModel *mod);
+void step_center(Center *cr);
 void step_model(struct GameModel *mod);
-float gx(struct GameModel *mod, float x);
-float gy(struct GameModel *mod, float y);
-float screencenterx(struct GameModel *mod);
-float screencentery(struct GameModel *mod);
+float relx(struct GameModel *mod, float x);
+float rely(struct GameModel *mod, float y);
 
 #endif // MACRO

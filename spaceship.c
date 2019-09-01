@@ -42,8 +42,8 @@ void draw_ship(Spaceship* s, struct GameModel *model)
     ALLEGRO_DISPLAY *display = model->display;
 
     al_rotate_transform(&transform, deg_to_rad(s->heading - SHIP_DISPLAY_ROT));
-    float newx = gx(model, s->sx) + screencenterx(model);
-    float newy = gy(model, s->sy) + screencentery(model);
+    float newx = relx(model, s->sx);
+    float newy = rely(model, s->sy);
     al_translate_transform(&transform, newx, newy);
     al_set_target_backbuffer(display);
     al_use_transform(&transform);
