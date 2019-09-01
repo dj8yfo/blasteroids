@@ -14,7 +14,7 @@ typedef struct {
     ALLEGRO_COLOR color;
 } Spaceship;
 
-Spaceship create_spaceship(float initx, float inity);
+Spaceship create_spaceship(float initx, float inity, float rotation) ;
 int reinit_spaceshit(Spaceship *ship);
 void draw_ship(Spaceship* s, ALLEGRO_DISPLAY* display);
 #endif

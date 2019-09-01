@@ -8,7 +8,7 @@ Model* init_model(float width, float height, ALLEGRO_DISPLAY *display) {
     check_mem(ship);
     Model *res = malloc(sizeof(Model));
     check_mem(res);
-    *ship = create_spaceship(width/2.0, height/2.0);
+    *ship = create_spaceship(width/2.0, height/2.0, 0.0);
     Model stru = {.ship = ship, .width = width, .height = height,
                   .display = display};
     log_info("init model with %f %f", width, height);

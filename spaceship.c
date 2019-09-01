@@ -4,11 +4,11 @@
 #include "locmath.h"
 #define NDEBUG
 #include "dbg.h"
-Spaceship create_spaceship(float initx, float inity) {
+Spaceship create_spaceship(float initx, float inity, float rotation) {
     log_info("init spaceship at %f %f", initx, inity);
     Spaceship res = {.startx = initx, .starty = inity,
                      .sx=initx, .sy = inity,
-                     .heading = 0.0,
+                     .heading = rotation,
                      .speed = 5.0,
                      .lives_left = 3, .interactable = 0,
                      .color = al_map_rgb(0, 244, 0)
