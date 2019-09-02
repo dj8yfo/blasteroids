@@ -6,6 +6,7 @@
 #include <model.h>
 #include <spaceship.h>
 #include <subroutine.h>
+#include <keyboard.h>
 
 const float FPS = 60;
 const int DISP_WIDTH = 1600;
@@ -40,11 +41,22 @@ int main(int argc, char **argv){
    mainswitch:
        switch (ev.type) {
        case ALLEGRO_EVENT_TIMER: {
+           readct_to_keys(gameint);
            redraw = true;
            break;
        }
        case ALLEGRO_EVENT_DISPLAY_CLOSE: {
            goto exitmaineventloop;
+           break;
+       }
+       case ALLEGRO_EVENT_KEY_DOWN:
+       case ALLEGRO_EVENT_KEY_CHAR:
+       {
+           key_switcher(ev.keyboard.keycode, 1);
+           break;
+       }
+       case ALLEGRO_EVENT_KEY_UP: {
+           key_switcher(ev.keyboard.keycode, 0);
            break;
        }
        default:
@@ -80,6 +92,9 @@ int alle_comps_init(ALLEGRO_DISPLAY **display,
     check(al_init(), "failed to initialize al_init\n");
     check(al_init_primitives_addon(),
           "failed to initialize allegro primitives adon!\n");
+    check(al_install_keyboard(),
+          "failed to initialize the keyboard!\n");
+
     *timer = al_create_timer(1.0 / FPS);
     check(*timer, "failed to create timer!\n");
 
@@ -91,6 +106,7 @@ int alle_comps_init(ALLEGRO_DISPLAY **display,
 
     al_register_event_source(*queue, al_get_display_event_source(*display));
     al_register_event_source(*queue, al_get_timer_event_source(*timer));
+    al_register_event_source(*queue, al_get_keyboard_event_source());
 
     return 0;
 error:

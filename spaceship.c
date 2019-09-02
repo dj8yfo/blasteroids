@@ -23,6 +23,7 @@ int reinit_spaceshit(Spaceship *ship) {
     ship->lives_left -= 1;
     if(ship->lives_left <=0 ) return 0;
     ship->interactable = 0;
+    ship->speed = 0.0;
     ship->sx = ship->startx;
     ship->sy = ship->starty;
     return 1;
@@ -51,4 +52,24 @@ void draw_ship(Spaceship* s, struct GameModel *model)
     al_draw_line(0, -11, 8, 9, s->color, 3.0f);
     al_draw_line(-6, 4, -1, 4, s->color, 3.0f);
     al_draw_line(6, 4, 1, 4, s->color, 3.0f);
+}
+
+void accelerate_ship(Spaceship *s) {
+    s->speed += 0.04;
+    debug("spaceship speed : %f", s->speed);
+}
+void decelerate_ship(Spaceship *s) {
+    s->speed -= 0.04;
+    if(s->speed <= 0.0) {
+        s->speed = 0.0;
+    }
+    debug("spaceship speed : %f", s->speed);
+}
+
+void rotate_ship_right(Spaceship *s) {
+    s->heading -= 2.0;
+}
+
+void rotate_ship_left(Spaceship *s) {
+    s->heading += 2.0;
 }

@@ -21,4 +21,10 @@ Spaceship create_spaceship(float initx, float inity, float rotation,
 int reinit_spaceshit(Spaceship *ship);
 void draw_ship(Spaceship* s, struct GameModel *model);
 void step_ship(Spaceship* s);
+void decelerate_ship(Spaceship *s);
+void accelerate_ship(Spaceship *s);
+void rotate_ship_left(Spaceship *s);
+void rotate_ship_right(Spaceship *s);
+
+
 #endif
