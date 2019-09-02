@@ -38,6 +38,15 @@ error:
 }
 
 void draw_model(struct GameModel *mod) {
+    tNode* blastnode = mod->blastlist;
+    while(blastnode) {
+        Blast *b = getBlast(blastnode);
+        if(b) {
+            debug("drawing blast from shiplist %f %f", b->tipx, b->tipy);
+            draw_blast(b, mod);
+        }
+        blastnode = blastnode->next;
+    }
     tNode* shipnode = mod->shipslist;
     while(shipnode) {
         Spaceship *s = getShip(shipnode);
@@ -103,6 +112,16 @@ void step_model(struct GameModel *mod) {
             step_ship(s);
         }
         shipnode = shipnode->next;
+    }
+    tNode* blastnode = mod->blastlist;
+    while(blastnode) {
+        Blast *b = getBlast(blastnode);
+        if(b) {
+            debug("stepping ship from shiplist %f %f", b->tipx, b->tipy);
+            step_blast(b);
+            //TODO: check blast is inactive
+        }
+        blastnode = blastnode->next;
     }
     redir_center(mod);
 }

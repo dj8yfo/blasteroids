@@ -1,9 +1,9 @@
 #include <model.h>
 #include <spaceship.h>
-#define KEY_NUM 4
+#define KEY_NUM 5
 enum MYKEYS {
-    KEY_A, KEY_D, KEY_W, KEY_S
+    KEY_A, KEY_D, KEY_W, KEY_S, KEY_SPACE
 };
-extern void (*key_reacts[]) (Spaceship *s);
+extern int (*key_reacts[]) (Spaceship *s, struct GameModel *model);
 void readct_to_keys(struct GameModel *model);
 void key_switcher(int key_code, int down);

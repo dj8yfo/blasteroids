@@ -1,4 +1,4 @@
-#include <math.h>
+#include <locmath.h>
 float deg_to_rad(float degrees) {
     return degrees / 180.0 * M_PI;
 }

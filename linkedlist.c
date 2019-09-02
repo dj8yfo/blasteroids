@@ -31,12 +31,52 @@ error:
     return NULL;
 }
 
+tNode* addNodeBlast(tNode** current, struct Blast *s) {
+
+
+    Blast *heaps = malloc(sizeof(Blast));
+    check_mem(heaps);
+    memcpy(heaps, s, sizeof(Blast));
+    tNode* newnode = malloc(sizeof(tNode) - 1 + sizeof(Blast*));
+    check_mem(newnode);
+    tNode stru = {.next = NULL, .prev = NULL,
+                  .payload_type = PAYLOAD_BLAST};
+    *newnode = stru;
+    Blast **nodeship = (Blast **) &newnode->payload;
+    /* log_info("pointer to be assigned to: %p", *current); */
+    *nodeship = heaps;
+    if(!*current) {
+        (*current) = newnode;
+    } else {
+        tNode *last = *current;
+        while(last->next) {
+            last = last->next;
+        }
+        last->next = newnode;
+        newnode->prev = last;
+    }
+    return newnode;
+error:
+    return NULL;
+}
+
 tNode* get_nth(tNode* start, int index) {
     tNode* curr = start;
     for (int i = 0; (curr != NULL && i < index); ++i) {
         curr = curr->next;
     }
     return curr;
+}
+
+Blast* getBlast(tNode *node) {
+    switch (node->payload_type) {
+    case PAYLOAD_BLAST: {
+        Blast **nodeship = (Blast **) &node->payload;
+        return *nodeship;
+    }
+    default:
+        return NULL;
+    }
 }
 
 Spaceship* getShip(tNode *node) {
