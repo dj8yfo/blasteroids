@@ -34,7 +34,7 @@ void step_blast(Blast* b) {
 
     if(coef >= 1.0) {
         b->vanished = 1;
-        log_info("finished stepping blast %f", coef);
+        debug("finished stepping blast %f", coef);
     }
 }
 

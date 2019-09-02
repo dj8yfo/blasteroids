@@ -3,6 +3,7 @@
 #include <dbg.h>
 #include <linkedlist.h>
 int key_flags[KEY_NUM] = {0, 0, 0, 0, 0};
+int ignored_repeats[IGNORED_REPEATS] = {KEY_SPACE};
 int (*key_reacts[]) (Spaceship *s, struct GameModel *model) = {rotate_ship_right, rotate_ship_left, accelerate_ship, decelerate_ship, fire_blast};
 void readct_to_keys(struct GameModel *model) {
     tNode* node = get_nth(model->shipslist, 0);
@@ -10,6 +11,19 @@ void readct_to_keys(struct GameModel *model) {
     check_mem(mains);
     al_lock_mutex(model->mutex);
     for(int i = 0; i < KEY_NUM; i++) {
+        int ignored = 0;
+        for(int j =0; j<IGNORED_REPEATS; j++) {
+            if(i == ignored_repeats[j])
+                ignored = 1;
+        }
+        if(ignored) {
+            if(key_flags[i] == 2) {
+                key_flags[i] = 0;
+            } else if(key_flags[i] == 1) {
+                key_reacts[i](mains, model);
+                key_flags[i] = 0;
+            }
+        } else
         if(key_flags[i]) {
             key_reacts[i](mains, model);
         }
@@ -20,26 +34,36 @@ error:
 }
 
 void key_switcher(int key_code, int down) {
-    debug("key code pressed: %d %s", key_code, down ? "down":"up");
+    int index;
+
     switch(key_code) {
     case ALLEGRO_KEY_A:
-        key_flags[KEY_A] = down;
+        index = KEY_A;
         break;
 
     case ALLEGRO_KEY_D:
-        key_flags[KEY_D] = down;
+        index = KEY_D;
         break;
 
     case ALLEGRO_KEY_S:
-        key_flags[KEY_S] = down;
+        index = KEY_S;
         break;
 
     case ALLEGRO_KEY_W:
-        key_flags[KEY_W] = down;
+        index = KEY_W;
         break;
     case ALLEGRO_KEY_SPACE: {
-        key_flags[KEY_SPACE] = down;
+        index = KEY_SPACE;
         break;
     }
     }
+    for (int j = 0; j < IGNORED_REPEATS; j++) {
+        if(index == ignored_repeats[j] && down == 2) {
+            goto exit;
+        }
+    }
+
+    key_flags[index] = down;
+    debug("key code pressed: %d %d", key_code, down);
+exit: ;
 }

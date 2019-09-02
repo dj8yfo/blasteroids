@@ -1,6 +1,7 @@
 #include <model.h>
 #include <spaceship.h>
 #define KEY_NUM 5
+#define IGNORED_REPEATS 1
 enum MYKEYS {
     KEY_A, KEY_D, KEY_W, KEY_S, KEY_SPACE
 };
