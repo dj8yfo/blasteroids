@@ -8,82 +8,86 @@
 #include <subroutine.h>
 #include <keyboard.h>
 
+
 const float FPS = 60;
 const int DISP_WIDTH = 1600;
 const int DISP_HEIGHT = 900;
 
 int main(int argc, char **argv){
 
-   ALLEGRO_DISPLAY *display = NULL;
-   ALLEGRO_EVENT_QUEUE *event_queue = NULL;
-   ALLEGRO_TIMER *timer = NULL;
-   ALLEGRO_THREAD *model_routine = NULL;
-   bool redraw = true;
+    ALLEGRO_DISPLAY *display = NULL;
+    ALLEGRO_EVENT_QUEUE *event_queue = NULL;
+    ALLEGRO_TIMER *timer = NULL;
+    ALLEGRO_THREAD *model_routine = NULL;
+    bool redraw = true;
 
-   int rc = alle_comps_init(&display, &timer, &event_queue);
-   check(rc == 0, "Failed to init one of allegrocomps");
-   struct GameModel *gameint = init_model(DISP_WIDTH, DISP_HEIGHT, display);
-   check_mem(gameint);
-   model_routine = al_create_thread(model_modification_routine, gameint);
-   check_mem(model_routine);
-   al_start_thread(model_routine);
+    int rc = alle_comps_init(&display, &timer, &event_queue);
+    check(rc == 0, "Failed to init one of allegrocomps");
+    struct GameModel *gameint = init_model(DISP_WIDTH, DISP_HEIGHT, display);
+    check_mem(gameint);
+    model_routine = al_create_thread(model_modification_routine, gameint);
+    check_mem(model_routine);
+    al_start_thread(model_routine);
 
-   al_clear_to_color(al_map_rgb(0,0,0));
-   al_flip_display();
-   al_start_timer(timer);
+    al_clear_to_color(al_map_rgb(0,0,0));
+    al_flip_display();
+    al_start_timer(timer);
 
 
-   while(1)
-   {
-       ALLEGRO_EVENT ev;
-       al_wait_for_event(event_queue, &ev);
+    while(1)
+    {
+        ALLEGRO_EVENT ev;
+        al_wait_for_event(event_queue, &ev);
 
-   mainswitch:
-       switch (ev.type) {
-       case ALLEGRO_EVENT_TIMER: {
-           readct_to_keys(gameint);
-           redraw = true;
-           break;
-       }
-       case ALLEGRO_EVENT_DISPLAY_CLOSE: {
-           goto exitmaineventloop;
-           break;
-       }
-       case ALLEGRO_EVENT_KEY_DOWN:
-       case ALLEGRO_EVENT_KEY_CHAR:
-       {
-           key_switcher(ev.keyboard.keycode, 1);
-           break;
-       }
-       case ALLEGRO_EVENT_KEY_UP: {
-           key_switcher(ev.keyboard.keycode, 0);
-           break;
-       }
-       default:
-           log_err("fell into `deault' branch of `mainswitch'");
-           break;
-       }
+    mainswitch:
+        switch (ev.type) {
+        case ALLEGRO_EVENT_TIMER: {
+            readct_to_keys(gameint);
+            redraw = true;
+            break;
+        }
+        case ALLEGRO_EVENT_DISPLAY_CLOSE: {
+            goto exitmaineventloop;
+            break;
+        }
+        case ALLEGRO_EVENT_KEY_DOWN:
+        case ALLEGRO_EVENT_KEY_CHAR:
+        {
+            key_switcher(ev.keyboard.keycode, 1);
+            break;
+        }
+        case ALLEGRO_EVENT_KEY_UP: {
+            key_switcher(ev.keyboard.keycode, 0);
+            break;
+        }
+        default:
+            log_err("fell into `deault' branch of `mainswitch'");
+            break;
+        }
 
-       if(redraw && al_is_event_queue_empty(event_queue)) {
-           redraw = false;
-           al_clear_to_color(al_map_rgb(0,0,0));
-           al_lock_mutex(gameint->mutex);
-           draw_model(gameint);
-           al_unlock_mutex(gameint->mutex);
+        if(redraw && al_is_event_queue_empty(event_queue)) {
+            redraw = false;
+            al_clear_to_color(al_map_rgb(0,0,0));
+            al_lock_mutex(gameint->mutex);
+            draw_model(gameint);
+            al_unlock_mutex(gameint->mutex);
 
-           al_flip_display();
-       }
-   }
+            al_flip_display();
+        }
+    }
 exitmaineventloop:
-   al_destroy_thread(model_routine);
-   alle_cleanup(display, timer, event_queue);
-   if(gameint) destr_model(gameint);
-   return 0;
+    al_destroy_thread(model_routine);
+    alle_cleanup(display, timer, event_queue);
+    al_uninstall_keyboard();
+    if(gameint) destr_model(gameint);
+    return 0;
 error:
-   alle_cleanup(display, timer, event_queue);
-   if(model_routine) al_destroy_thread(model_routine);
-   if(gameint) destr_model(gameint);
-   return 1;
+    al_destroy_thread(model_routine);
+    alle_cleanup(display, timer, event_queue);
+    al_uninstall_keyboard();
+    if(model_routine) al_destroy_thread(model_routine);
+    if(gameint) destr_model(gameint);
+    return 1;
 }
 
 int alle_comps_init(ALLEGRO_DISPLAY **display,
@@ -118,7 +122,15 @@ error:
 void alle_cleanup(ALLEGRO_DISPLAY *display,
                   ALLEGRO_TIMER *timer,
                   ALLEGRO_EVENT_QUEUE *queue) {
-    if(timer) al_destroy_timer(timer);
-    if(display) al_destroy_display(display);
-    if(queue) al_destroy_event_queue(queue);
+    if(timer) {
+        al_destroy_timer(timer);
+        log_info("destroyed timer");
+    }
+    if(display) {al_destroy_display(display);
+        log_info("destroyed display");
+    }
+    if(queue) {
+        al_destroy_event_queue(queue);
+        log_info("destroyed event queue");
+    }
 }

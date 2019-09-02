@@ -1,5 +1,6 @@
 #include <subroutine.h>
 #include <model.h>
+#include <dbg.h>
 void *model_modification_routine(ALLEGRO_THREAD *thr, void *modelarg) {
     struct GameModel *model = (struct GameModel *) modelarg;
 
@@ -12,5 +13,6 @@ void *model_modification_routine(ALLEGRO_THREAD *thr, void *modelarg) {
 
         al_rest(1 / MODEL_FREQUENCY);
     }
+    log_info("model thread finished: success");
     return model;
 }

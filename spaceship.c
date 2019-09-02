@@ -67,9 +67,15 @@ void decelerate_ship(Spaceship *s) {
 }
 
 void rotate_ship_right(Spaceship *s) {
-    s->heading -= 2.0;
+    float sp = s->speed;
+    if(sp) {
+        s->heading -= 50/(sp*sp);
+    }
 }
 
 void rotate_ship_left(Spaceship *s) {
-    s->heading += 2.0;
+    float sp = s->speed;
+    if(sp) {
+        s->heading += 50/(sp*sp);
+    }
 }

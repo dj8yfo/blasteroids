@@ -2,15 +2,14 @@
 #define __model_h_
 
 #include <allegro5/allegro.h>
-#include <spaceship.h>
 #include <center.h>
+#include <linkedlist.h>
 
 
 struct GameModel {
     float width;
     float height;
-    struct Spaceship *ship;
-    struct Spaceship *derelict;
+    struct _tNode *shipslist;
     Center *cr;
     ALLEGRO_DISPLAY *display;
     ALLEGRO_MUTEX *mutex;
