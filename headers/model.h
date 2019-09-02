@@ -6,15 +6,6 @@
 #include <linkedlist.h>
 
 
-struct GameModel {
-    float width;
-    float height;
-    struct _tNode *shipslist;
-    Center *cr;
-    ALLEGRO_DISPLAY *display;
-    ALLEGRO_MUTEX *mutex;
-};
-
 struct GameModel* init_model(float width, float height, ALLEGRO_DISPLAY *display) ;
 void draw_model(struct GameModel *mod);
 void destr_model(struct GameModel *mod);

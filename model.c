@@ -13,18 +13,18 @@ struct GameModel* init_model(float width, float height, ALLEGRO_DISPLAY *display
     Spaceship derelict = create_spaceship(width/2.0 + 40, height/2.0 + 40, SHIP_DISPLAY_ROT,
                                           al_map_rgb(0, 244, 244), 0.0);
     struct GameModel *res = malloc(sizeof(struct GameModel));
-    check_mem(res);
     Center *cr = malloc(sizeof(Center));
+    tNode* shiplist = NULL;
+    check_mem(res);
     check_mem(cr);
     Center center = {.x = width/2.0, .y = height/2.0,
                      .dx = 0.0, .dy = 0.0};
     *cr = center;
-    tNode* shiplist = NULL;
     tNode* ress;
     ress = addNodeSpaceship(&shiplist, &ship);
-    check_mem(res);
+    check_mem(ress);
     ress = addNodeSpaceship(&shiplist, &derelict);
-    check_mem(res);
+    check_mem(ress);
     ALLEGRO_MUTEX *mx = al_create_mutex();
     struct GameModel stru = {.shipslist = shiplist, .width = width, .height = height,
                   .display = display, .mutex = mx, .cr = cr};

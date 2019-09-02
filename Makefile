@@ -1,5 +1,5 @@
 # CFLAGS=-g -Wall
-CFLAGS=-g
+CFLAGS=-g -Wall
 all: game
 %.o: %.c
 	cc $(CFLAGS) -c -I./headers $^ `pkg-config --libs allegro-5 allegro_primitives-5 allegro_image-5` -o $@

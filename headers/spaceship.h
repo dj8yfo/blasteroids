@@ -2,8 +2,9 @@
 #define __spaceship_
 #include <allegro5/allegro.h>
 #include <allegro5/color.h>
-#include <model.h>
+#include <center.h>
 #define SHIP_DISPLAY_ROT -90.0f
+
 typedef struct Spaceship{
     float sx;
     float sy;
@@ -16,6 +17,14 @@ typedef struct Spaceship{
     ALLEGRO_COLOR color;
 } Spaceship;
 
+struct GameModel {
+    float width;
+    float height;
+    struct _tNode *shipslist;
+    Center *cr;
+    ALLEGRO_DISPLAY *display;
+    ALLEGRO_MUTEX *mutex;
+};
 Spaceship create_spaceship(float initx, float inity, float rotation,
                            ALLEGRO_COLOR color, float speed) ;
 int reinit_spaceshit(Spaceship *ship);
