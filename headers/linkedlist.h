@@ -15,6 +15,7 @@ typedef enum {
 } tPayLoad;
 tNode* addNodeSpaceship(tNode** current, struct Spaceship *s);
 tNode* addNodeBlast(tNode** current, struct Blast *s);
+tNode* removeNode(tNode** start, tNode* interm);
 tNode* get_nth(tNode* start, int index);
 struct Spaceship* getShip(tNode *node);
 struct Blast* getBlast(tNode *node);

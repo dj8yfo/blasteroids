@@ -119,6 +119,19 @@ void step_model(struct GameModel *mod) {
         if(b) {
             debug("stepping ship from shiplist %f %f", b->tipx, b->tipy);
             step_blast(b);
+            if(b->vanished) {
+                log_info("start node: %p", mod->blastlist);
+                log_info("successfully remove blast %f %f %f %f %f %f %f %f %d", b->startx, b->starty,
+                         b->speed, b->direction, b->blast_maxx, b->blast_maxy, b->tipx, b->tipy, b->vanished);
+                log_info("current_blastnode: [%p self] [%p next] [%p prev]", blastnode, blastnode->next, blastnode->prev);
+                blastnode = removeNode(&mod->blastlist, blastnode);
+
+                if(blastnode)
+                    log_info("current_blastnode after removal: [%p self] [%p next] [%p prev]", blastnode, blastnode->next, blastnode->prev);
+                else
+                    log_info("current_blastnode after removal: [%p self]", blastnode);
+                continue;
+            }
             //TODO: check blast is inactive
         }
         blastnode = blastnode->next;
@@ -129,6 +142,7 @@ void step_model(struct GameModel *mod) {
 void destr_model(struct GameModel *mod) {
     al_destroy_mutex(mod->mutex);
     freeList(mod->shipslist);
+    freeList(mod->blastlist);
     free(mod->cr);
     free(mod);
 }

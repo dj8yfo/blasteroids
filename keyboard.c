@@ -1,3 +1,4 @@
+#define NDEBUG
 #include <keyboard.h>
 #include <allegro5/allegro.h>
 #include <dbg.h>
@@ -28,13 +29,13 @@ void readct_to_keys(struct GameModel *model) {
             key_reacts[i](mains, model);
         }
     }
-    al_unlock_mutex(model->mutex);
 error:
+    al_unlock_mutex(model->mutex);
     return;
 }
 
 void key_switcher(int key_code, int down) {
-    int index;
+    int index = -1;
 
     switch(key_code) {
     case ALLEGRO_KEY_A:
@@ -63,7 +64,8 @@ void key_switcher(int key_code, int down) {
         }
     }
 
-    key_flags[index] = down;
+    if(index >= 0)
+        key_flags[index] = down;
     debug("key code pressed: %d %d", key_code, down);
 exit: ;
 }

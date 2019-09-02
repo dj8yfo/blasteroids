@@ -5,8 +5,8 @@
 #include <math.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-const float BLAST_MAX_LATENCY = 30;
-const float BLAST_SPEED_MUL = 3;
+const float BLAST_MAX_LATENCY = 25;
+const float BLAST_SPEED_MUL = 4;
 const float BLAST_DASHED_LEN = 10;
 Blast createBlast(float speed, float stx, float sty, float direction) {
     float dir = deg_to_rad(direction);

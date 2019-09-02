@@ -31,6 +31,54 @@ error:
     return NULL;
 }
 
+void freePayload(tNode *node) {
+    
+    switch (node->payload_type) {
+    case PAYLOAD_SHIP: {
+        Spaceship **nodeship = (Spaceship **) &node->payload;
+        free(*nodeship);
+        break;
+    }
+    case PAYLOAD_BLAST: {
+        Blast **nodeblast = (Blast **) &node->payload;
+        free(*nodeblast);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+tNode* removeNode(tNode** start, tNode* interm) {
+    tNode* res = interm->next;
+    if(interm == NULL) return NULL;
+    if(interm->prev == NULL && interm == *start) {
+        if(interm->next == NULL) {
+            *start = NULL;
+            freePayload(interm);
+            free(interm);
+        } else {
+            *start = interm->next;
+            interm->next->prev = interm->prev;
+            freePayload(interm);
+            free(interm);
+        }
+    } else if (interm->prev != NULL){
+        log_info("pointer modification 2");
+        interm->prev->next = interm->next;
+        if(interm->next) {
+            interm->next->prev = interm->prev;
+        }
+        freePayload(interm);
+        free(interm);
+    } else {
+        sentinel("unreachable removeNOde %p (interm) %p (*start)", interm, *start);
+    }
+    return res;
+error:
+    return NULL;
+}
+
 tNode* addNodeBlast(tNode** current, struct Blast *s) {
 
 
@@ -90,18 +138,13 @@ Spaceship* getShip(tNode *node) {
     }
 }
 
+
 void freeList(tNode *node) {
     if(node->next) {
         freeList(node->next);
     }
-    switch (node->payload_type) {
-    case PAYLOAD_SHIP: {
-        Spaceship **nodeship = (Spaceship **) &node->payload;
-        free(*nodeship);
-        break;
-    }
-default:
-        break;
-    }
+    freePayload(node);
     free(node);
 }
+
+

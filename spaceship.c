@@ -90,8 +90,8 @@ int fire_blast(Spaceship* s, struct GameModel *model) {
         Blast res = createBlast(s->speed, s->sx, s->sy, s->heading);
         tNode* inter = addNodeBlast(&model->blastlist, &res);
         check_mem(inter);
+        log_info("fired blast %f %f", res.startx, res.starty);
     }
-    log_info("fired blast");
     return 0;
 error:
     return -1;
